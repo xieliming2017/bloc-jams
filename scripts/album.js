@@ -13,6 +13,21 @@ var albumPicasso = {
      ]
  };
 
+ var albumDaVinci = {
+     title: 'The Genius',
+     artist: 'Leonardo da Vinci',
+     label: 'Versatile',
+     year: '1452',
+     albumArtUrl: 'assets/images/album_covers/07.png',
+     songs: [
+         { title: 'Mona Lisa', duration: '1:01' },
+         { title: 'The Last Supper', duration: '2:01' },
+         { title: 'The Vitruvian Man', duration: '3:21'},
+         { title: 'Lady with an Ermine', duration: '4:14' },
+         { title: 'Virgin of the Rocks', duration: '5:15'}
+     ]
+ };
+
  var albumMarconi = {
      title: 'The Telephone',
      artist: 'Guglielmo Marconi',
@@ -40,30 +55,46 @@ var createSongRow = function(songNumber, songName, songLength) {
      return template;
  };
 
-var setCurrentAlbum = function(album) {
-     // #1
-     var albumTitle = document.getElementsByClassName('album-view-title')[0];
-     var albumArtist = document.getElementsByClassName('album-view-artist')[0];
-     var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
-     var albumImage = document.getElementsByClassName('album-cover-art')[0];
-     var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
+ var albumTitle = document.getElementsByClassName('album-view-title')[0];
+ var albumArtist = document.getElementsByClassName('album-view-artist')[0];
+ var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
+ var albumImage = document.getElementsByClassName('album-cover-art')[0];
+ var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
 
-     // #2
+var setCurrentAlbum = function(album) {
+
      albumTitle.firstChild.nodeValue = album.title;
      albumArtist.firstChild.nodeValue = album.artist;
      albumReleaseInfo.firstChild.nodeValue = album.year + ' ' + album.label;
      albumImage.setAttribute('src', album.albumArtUrl);
 
-     // #3
      albumSongList.innerHTML = '';
 
-     // #4
      for (var i = 0; i < album.songs.length; i++) {
          albumSongList.innerHTML += createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
      }
-
  };
 
+
+
  window.onload = function() {
-     setCurrentAlbum(albumPicasso);
+   setCurrentAlbum(albumPicasso);
+
+   var clickCount = 0;
+    albumImage.addEventListener("click", function (event){
+      clickCount++;
+      if(clickCount%3 == 0){
+        setCurrentAlbum(albumPicasso);
+      } else if (clickCount%3 ==1) {
+        setCurrentAlbum(albumMarconi);
+      } else if (clickCount%3 == 2) {
+        setCurrentAlbum(albumDaVinci);
+      } else {
+        setCurrentAlbum(albumDaVinci);
+      }
+    });
+
+
+
+
  };
