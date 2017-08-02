@@ -59,14 +59,14 @@ var createSongRow = function(songNumber, songName, songLength) {
 
  };
 
+ var $albumTitle = $('.album-view-title');
+ var $albumArtist = $('.album-view-artist');
+ var $albumReleaseInfo = $('.album-view-release-info');
+ var $albumImage = $('.album-cover-art');
+ var $albumSongList = $('.album-view-song-list');
+
 var setCurrentAlbum = function(album) {
     currentAlbum = album;
-
-  var $albumTitle = $('.album-view-title');
-  var $albumArtist = $('.album-view-artist');
-  var $albumReleaseInfo = $('.album-view-release-info');
-  var $albumImage = $('.album-cover-art');
-  var $albumSongList = $('.album-view-song-list');
     $albumTitle.text(album.title);
     $albumArtist.text(album.artist);
     $albumReleaseInfo.text(album.year + ' ' + album.label);
@@ -83,41 +83,69 @@ var setCurrentAlbum = function(album) {
    return album.songs.indexOf(song);
  }
 
- var nextSong = function(){
-   var indexOfPlayingSong = trackIndex(currentAlbum,currentSongFromAlbum);
-   if(indexOfPlayingSong === currentAlbum.songs.length-1){
-     indexOfPlayingSong = 0;
-   }
-   else {
-     indexOfPlayingSong ++;
-   }
-   var lastSongNumber = currentlyPlayingSongNumber;
-   setSong(indexOfPlayingSong+1);
-   updatePlayerBarSong();
-   var $nextSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
-    var $lastSongNumberCell = getSongNumberCell(lastSongNumber);;
+ // var nextSong = function(){
+ //   var indexOfPlayingSong = trackIndex(currentAlbum,currentSongFromAlbum);
+ //   if(indexOfPlayingSong === currentAlbum.songs.length-1){
+ //     indexOfPlayingSong = 0;
+ //   }
+ //   else {
+ //     indexOfPlayingSong ++;
+ //   }
+ //   var lastSongNumber = currentlyPlayingSongNumber;
+ //   setSong(indexOfPlayingSong+1);
+ //   updatePlayerBarSong();
+ //   var $nextSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
+ //    var $lastSongNumberCell = getSongNumberCell(lastSongNumber);;
+ //
+ //    $nextSongNumberCell.html(pauseButtonTemplate);
+ //    $lastSongNumberCell.html(lastSongNumber);
+ // };
+ //
+ // var previousSong = function(){
+ //   var indexOfPlayingSong = trackIndex(currentAlbum,currentSongFromAlbum);
+ //   if(indexOfPlayingSong === 0){
+ //     indexOfPlayingSong = currentAlbum.songs.length-1;
+ //   }
+ //   else {
+ //     indexOfPlayingSong--;
+ //   }
+ //   var lastSongNumber = currentlyPlayingSongNumber;
+ //   setSong(indexOfPlayingSong+1);
+ //   updatePlayerBarSong();
+ //   $('.main-controls .play-pause').html(playerBarPauseButton);
+ //   var $previousSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
+ //    var $lastSongNumberCell = getSongNumberCell(lastSongNumber);
+ //
+ //    $previousSongNumberCell.html(pauseButtonTemplate);
+ //    $lastSongNumberCell.html(lastSongNumber);
+ // }
 
-    $nextSongNumberCell.html(pauseButtonTemplate);
-    $lastSongNumberCell.html(lastSongNumber);
- };
-
- var previousSong = function(){
-   var indexOfPlayingSong = trackIndex(currentAlbum,currentSongFromAlbum);
-   if(indexOfPlayingSong === 0){
-     indexOfPlayingSong = currentAlbum.songs.length-1;
-   }
-   else {
-     indexOfPlayingSong --;
-   }
+ var switchSong = function(){
    var lastSongNumber = currentlyPlayingSongNumber;
-   setSong(indexOfPlayingSong+1);
+   var currrentSongIndex = trackIndex(currentAlbum,currentSongFromAlbum);
+   var buttonType = $(this).attr('class');
+   if(buttonType == "previous"){
+     if(currrentSongIndex == 0){
+       currrentSongIndex = currentAlbum.songs.length-1;
+     }else {
+       currrentSongIndex--;
+     }
+   }
+   else if(buttonType == 'next'){
+     if(currrentSongIndex == currentAlbum.songs.length-1){
+       currrentSongIndex = 0;
+     } else {
+       currrentSongIndex++;
+     }
+   }
+   setSong(currrentSongIndex+1);
    updatePlayerBarSong();
    $('.main-controls .play-pause').html(playerBarPauseButton);
-   var $previousSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
-    var $lastSongNumberCell = getSongNumberCell(lastSongNumber);
+   var $comingSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
+   var $lastSongNumberCell = getSongNumberCell(lastSongNumber);
 
-    $previousSongNumberCell.html(pauseButtonTemplate);
-    $lastSongNumberCell.html(lastSongNumber);
+   $comingSongNumberCell.html(pauseButtonTemplate);
+   $lastSongNumberCell.html(lastSongNumber);
  }
 
  var updatePlayerBarSong = function(){
@@ -160,20 +188,16 @@ var $nextButton = $('.main-controls .next');
 
  $(document).ready(function() {
    setCurrentAlbum(albumPicasso);
-   $previousButton.click(previousSong);
-   $nextButton.click(nextSong);
+   $previousButton.click(switchSong);
+   $nextButton.click(switchSong);
 
-  //  var clickCount = 0;
-  //   $albumImage.click(function (){
-  //     clickCount++;
-  //     if(clickCount%3 == 0){
-  //       setCurrentAlbum(albumPicasso);
-  //     } else if (clickCount%3 ==1) {
-  //       setCurrentAlbum(albumMarconi);
-  //     } else if (clickCount%3 == 2) {
-  //       setCurrentAlbum(albumDaVinci);
-  //     } else {
-  //       setCurrentAlbum(albumDaVinci);
-  //     }
-  //   });
+  var albums = [albumPicasso, albumMarconi, albumDaVinci];
+  var index = 1;
+  $albumImage.click(function(event){
+    setCurrentAlbum(albums[index]);
+    index++;
+    if(index == albums.length){
+      index = 0;
+    }
+  });
  });
